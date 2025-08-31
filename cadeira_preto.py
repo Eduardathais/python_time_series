@@ -80,11 +80,16 @@ def tempo_execucao(func):
 # - Retorna o resultado da última execução
 # - Use @wraps na função interna
 def repete(n):
-    # TODO: implementar
-    raise NotImplementedError
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            resultado = None
+            for i in range(n):
+                resultado = func(*args, **kwargs)
+            return resultado
+        return wrapper
+    return decorator
 
-
-#  Funções-alvo para decorar
 
 @tempo_execucao
 def soma_lenta(a, b):
@@ -92,7 +97,10 @@ def soma_lenta(a, b):
     time.sleep(0.5)
     return a + b
 
+@repete(3)
 def diga_oi(nome):
     return f"Oi, {nome}!"
 
 soma_lenta(56454, 5454654)
+
+print(diga_oi("Eduarda"))
