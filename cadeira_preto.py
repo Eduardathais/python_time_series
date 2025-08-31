@@ -63,8 +63,15 @@ from functools import wraps
 # - Meça o tempo com time.perf_counter()
 # - Printee: "func <nome> levou <segundos:.3f>s"
 def tempo_execucao(func):
-    # TODO: implementar
-    raise NotImplementedError
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        inicio = time.perf_counter()
+        resultado = func(*args, **kwargs)
+        fim = time.perf_counter()
+        total = fim - inicio
+        print(f"func {func.__name__} levou {total:.3f}s")
+        return resultado
+    return wrapper
 
 
 # Crie um decorator com parâmetro: @repete(n) 
@@ -77,7 +84,9 @@ def repete(n):
     raise NotImplementedError
 
 
-#  Funções-alvo para decorar 
+#  Funções-alvo para decorar
+
+@tempo_execucao
 def soma_lenta(a, b):
     """Soma após meio segundo"""
     time.sleep(0.5)
@@ -86,12 +95,4 @@ def soma_lenta(a, b):
 def diga_oi(nome):
     return f"Oi, {nome}!"
 
-
-#  Aplique seus decorators (após implementar) 
-# Ex.: @tempo_execucao
-#      def soma_lenta(...):
-#          ...
-
-# Ex.: @repete(3)
-#      def diga_oi(...):
-#          ...
+soma_lenta(56454, 5454654)
